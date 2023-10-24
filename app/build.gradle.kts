@@ -22,7 +22,8 @@ android {
         }
     }
 
-    ndkVersion = "25.1.8937393"
+    ndkVersion = "16.1.4479499"
+//    ndkVersion = "25.1.8937393"
 
     buildTypes {
         release {

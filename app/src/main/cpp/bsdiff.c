@@ -34,8 +34,8 @@
 
 #define MIN(x,y) (((x)<(y)) ? (x) : (y))
 
-#define errx err
-void err(int exitcode, const char * fmt, ...)
+#define errx errDiff
+void errDiff(int exitcode, const char * fmt, ...)
 {
 	va_list valist;
 	va_start(valist, fmt);
@@ -224,21 +224,21 @@ int executeDiff(int argc, char *argv[])
 	BZFILE * pfbz2;
 	int bz2err;
 
-	if (argc != 4) errx(1, "usage: %s oldfile newfile patchfile\n", argv[0]);
+	if (argc != 4) errDiff(1, "zengbobo executeDiff usage: %s oldfile newfile patchfile\n", argv[0]);
 
 	/* Allocate oldsize+1 bytes instead of oldsize bytes to ensure
 		that we never try to malloc(0) and get a NULL pointer */
 	fd = open(argv[1], O_RDONLY, 0);
-	if (fd == -1)err(1, "Open failed :%s", argv[1]);
+	if (fd == -1)errDiff(1, "zengbobo executeDiff Open failed :%s", argv[1]);
 	oldsize = lseek(fd, 0, SEEK_END);
 	pold = (u_char *)malloc(oldsize + 1);
-	if (pold == NULL)	err(1, "Malloc failed :%s", argv[1]);
+	if (pold == NULL)	errDiff(1, "zengbobo executeDiff Malloc failed :%s", argv[1]);
 	lseek(fd, 0, SEEK_SET);
-	if (read(fd, pold, oldsize) == -1)	err(1, "Read failed :%s", argv[1]);
-	if (close(fd) == -1)	err(1, "Close failed :%s", argv[1]);
+	if (read(fd, pold, oldsize) == -1)	errDiff(1, "zengbobo executeDiff Read failed :%s", argv[1]);
+	if (close(fd) == -1)	errDiff(1, "zengbobo executeDiff Close failed :%s", argv[1]);
 
 	if (((I = (long *)malloc((oldsize + 1) * sizeof(long))) == NULL) ||
-		((V = (long *)malloc((oldsize + 1) * sizeof(long))) == NULL)) err(1, NULL);
+		((V = (long *)malloc((oldsize + 1) * sizeof(long))) == NULL)) errDiff(1, "zengbobo executeDiff null");
 
 	qsufsort(I, V, pold, oldsize);
 
@@ -247,22 +247,22 @@ int executeDiff(int argc, char *argv[])
 	/* Allocate newsize+1 bytes instead of newsize bytes to ensure
 		that we never try to malloc(0) and get a NULL pointer */
 	fd = open(argv[2], O_RDONLY, 0);
-	if (fd == -1)	err(1, "Open failed :%s", argv[2]);
+	if (fd == -1)	errDiff(1, "zengbobo executeDiff Open failed :%s", argv[2]);
 	newsize = lseek(fd, 0, SEEK_END);
 	pnew = (u_char *)malloc(newsize + 1);
-	if (pnew == NULL)	err(1, "Malloc failed :%s", argv[2]);
+	if (pnew == NULL)	errDiff(1, "zengbobo executeDiff Malloc failed :%s", argv[2]);
 	lseek(fd, 0, SEEK_SET);
-	if (read(fd, pnew, newsize) == -1)	err(1, "Read failed :%s", argv[2]);
-	if (close(fd) == -1)	err(1, "Close failed :%s", argv[2]);
+	if (read(fd, pnew, newsize) == -1)	errDiff(1, "zengbobo executeDiff Read failed :%s", argv[2]);
+	if (close(fd) == -1)	errDiff(1, "zengbobo executeDiff Close failed :%s", argv[2]);
 
 	if (((db = (u_char *)malloc(newsize + 1)) == NULL) ||
-		((eb = (u_char *)malloc(newsize + 1)) == NULL)) err(1, NULL);
+		((eb = (u_char *)malloc(newsize + 1)) == NULL)) errDiff(1, "zengbobo executeDiff  null 2");
 	dblen = 0;
 	eblen = 0;
 
 	/* Create the patch file */
 	if ((pf = fopen(argv[3], "wb")) == NULL)
-		err(1, "Open failed %s", argv[3]);
+		errDiff(1, "zengbobo executeDiff Open failed %s", argv[3]);
 
 	/* Header is
 		0	8	 "BSDIFF40"
@@ -279,11 +279,11 @@ int executeDiff(int argc, char *argv[])
 	offtout(0, header + 16);
 	offtout(newsize, header + 24);
 	if (fwrite(header, 32, 1, pf) != 1)
-		err(1, "fwrite(%s)", argv[3]);
+		errDiff(1, "zengbobo executeDiff fwrite(%s)", argv[3]);
 
 	/* Compute the differences, writing ctrl as we go */
 	if ((pfbz2 = BZ2_bzWriteOpen(&bz2err, pf, 9, 0, 0)) == NULL)
-		errx(1, "BZ2_bzWriteOpen, bz2err = %d", bz2err);
+		errx(1, "zengbobo executeDiff BZ2_bzWriteOpen, bz2err = %d", bz2err);
 	scan = 0;len = 0;
 	lastscan = 0;lastpos = 0;lastoffset = 0;
 	while (scan < newsize) {
@@ -349,17 +349,17 @@ int executeDiff(int argc, char *argv[])
 			offtout(lenf, buf);
 			BZ2_bzWrite(&bz2err, pfbz2, buf, 8);
 			if (bz2err != BZ_OK)
-				errx(1, "BZ2_bzWrite, bz2err = %d", bz2err);
+				errx(1, "zengbobo executeDiff BZ2_bzWrite, bz2err = %d", bz2err);
 
 			offtout((scan - lenb) - (lastscan + lenf), buf);
 			BZ2_bzWrite(&bz2err, pfbz2, buf, 8);
 			if (bz2err != BZ_OK)
-				errx(1, "BZ2_bzWrite, bz2err = %d", bz2err);
+				errx(1, "zengbobo executeDiff BZ2_bzWrite, bz2err = %d", bz2err);
 
 			offtout((pos - lenb) - (lastpos + lenf), buf);
 			BZ2_bzWrite(&bz2err, pfbz2, buf, 8);
 			if (bz2err != BZ_OK)
-				errx(1, "BZ2_bzWrite, bz2err = %d", bz2err);
+				errx(1, "zengbobo executeDiff BZ2_bzWrite, bz2err = %d", bz2err);
 
 			lastscan = scan - lenb;
 			lastpos = pos - lenb;
@@ -368,45 +368,45 @@ int executeDiff(int argc, char *argv[])
 	};
 	BZ2_bzWriteClose(&bz2err, pfbz2, 0, NULL, NULL);
 	if (bz2err != BZ_OK)
-		errx(1, "BZ2_bzWriteClose, bz2err = %d", bz2err);
+		errx(1, "zengbobo executeDiff BZ2_bzWriteClose, bz2err = %d", bz2err);
 
 	/* Compute size of compressed ctrl data */
 	if ((len = ftell(pf)) == -1)
-		err(1, "ftello");
+		errDiff(1, "zengbobo executeDiff ftello");
 	offtout(len - 32, header + 8);
 
 	/* Write compressed diff data */
 	if ((pfbz2 = BZ2_bzWriteOpen(&bz2err, pf, 9, 0, 0)) == NULL)
-		errx(1, "BZ2_bzWriteOpen, bz2err = %d", bz2err);
+		errx(1, "zengbobo executeDiff BZ2_bzWriteOpen, bz2err = %d", bz2err);
 	BZ2_bzWrite(&bz2err, pfbz2, db, dblen);
 	if (bz2err != BZ_OK)
-		errx(1, "BZ2_bzWrite, bz2err = %d", bz2err);
+		errx(1, "zengbobo executeDiff BZ2_bzWrite, bz2err = %d", bz2err);
 	BZ2_bzWriteClose(&bz2err, pfbz2, 0, NULL, NULL);
 	if (bz2err != BZ_OK)
-		errx(1, "BZ2_bzWriteClose, bz2err = %d", bz2err);
+		errx(1, "zengbobo executeDiff BZ2_bzWriteClose, bz2err = %d", bz2err);
 
 	/* Compute size of compressed diff data */
 	if ((newsize = ftell(pf)) == -1)
-		err(1, "ftello");
+		errDiff(1, "zengbobo executeDiff ftello");
 	offtout(newsize - len, header + 16);
 
 	/* Write compressed extra data */
 	if ((pfbz2 = BZ2_bzWriteOpen(&bz2err, pf, 9, 0, 0)) == NULL)
-		errx(1, "BZ2_bzWriteOpen, bz2err = %d", bz2err);
+		errx(1, "zengbobo executeDiff BZ2_bzWriteOpen, bz2err = %d", bz2err);
 	BZ2_bzWrite(&bz2err, pfbz2, eb, eblen);
 	if (bz2err != BZ_OK)
-		errx(1, "BZ2_bzWrite, bz2err = %d", bz2err);
+		errx(1, "zengbobo executeDiff BZ2_bzWrite, bz2err = %d", bz2err);
 	BZ2_bzWriteClose(&bz2err, pfbz2, 0, NULL, NULL);
 	if (bz2err != BZ_OK)
-		errx(1, "BZ2_bzWriteClose, bz2err = %d", bz2err);
+		errx(1, "zengbobo executeDiff BZ2_bzWriteClose, bz2err = %d", bz2err);
 
 	/* Seek to the beginning, write the header, and close the file */
 	if (fseek(pf, 0, SEEK_SET))
-		err(1, "fseeko");
+		errDiff(1, "zengbobo executeDiff fseeko");
 	if (fwrite(header, 32, 1, pf) != 1)
-		err(1, "fwrite(%s)", argv[3]);
+		errDiff(1, "zengbobo executeDiff fwrite(%s)", argv[3]);
 	if (fclose(pf))
-		err(1, "fclose");
+		errDiff(1, "zengbobo executeDiff fclose");
 
 	/* Free the memory we used */
 	free(db);

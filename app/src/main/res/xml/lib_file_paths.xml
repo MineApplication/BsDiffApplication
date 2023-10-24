@@ -13,6 +13,7 @@
         <external-path
             name="beta_external_files_path"
             path="Android/data/" />
+        <external-files-path path="/apk" name="apk"/>
         <external-files-path path="/download" name="download"/>
         <external-cache-path path="/download" name="download" />
     </paths>

@@ -1,10 +1,12 @@
 package com.body.bsdiffapplication
 
 import android.os.Bundle
+import android.view.View
+import android.view.View.OnClickListener
 import androidx.appcompat.app.AppCompatActivity
 import com.body.bsdiffapplication.databinding.ActivityMainBinding
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(),OnClickListener {
 
     private lateinit var binding: ActivityMainBinding
 
@@ -13,9 +15,21 @@ class MainActivity : AppCompatActivity() {
 
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
+        binding.tvDiff.setOnClickListener(this)
+        binding.tvPatch.setOnClickListener(this)
         // Example of a call to a native method
         binding.sampleText.text = BsPatchUtils.stringFromJNI()
+    }
+
+    override fun onClick(v: View?) {
+        when(v?.id){
+            R.id.tvDiff->{
+                BsPatchUtils.executeDiff(this)
+            }
+            R.id.tvPatch->{
+                BsPatchUtils.executePatch(this)
+            }
+        }
     }
 
     /**

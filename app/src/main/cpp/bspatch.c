@@ -149,7 +149,7 @@ int executePatch(int argc, char * argv[])
 	if (read(fd, pold, oldsize) == -1)	err(1, "Read failed :%s", argv[1]);
 	if (close(fd) == -1)	err(1, "Close failed :%s", argv[1]);
 
-	pnew = malloc(newsize + 1);
+	pnew = (u_char *)malloc(newsize + 1);
 	if (pnew == NULL)err(1, NULL);
 
 	oldpos = 0;newpos = 0;
