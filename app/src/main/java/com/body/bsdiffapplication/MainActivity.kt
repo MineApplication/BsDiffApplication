@@ -17,6 +17,7 @@ class MainActivity : AppCompatActivity(),OnClickListener {
         setContentView(binding.root)
         binding.tvDiff.setOnClickListener(this)
         binding.tvPatch.setOnClickListener(this)
+        binding.tvInstall.setOnClickListener(this)
         // Example of a call to a native method
         binding.sampleText.text = BsPatchUtils.stringFromJNI()
     }
@@ -28,6 +29,9 @@ class MainActivity : AppCompatActivity(),OnClickListener {
             }
             R.id.tvPatch->{
                 BsPatchUtils.executePatch(this)
+            }
+            R.id.tvInstall->{
+                BsPatchUtils.install(this)
             }
         }
     }
