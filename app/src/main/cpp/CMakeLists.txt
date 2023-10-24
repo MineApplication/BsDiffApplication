@@ -4,12 +4,16 @@
 
 # Sets the minimum CMake version required for this project.
 cmake_minimum_required(VERSION 3.22.1)
+#cmake_minimum_required(VERSION 3.4.1)
 
 # Declares the project name. The project name can be accessed via ${ PROJECT_NAME},
 # Since this is the top level CMakeLists.txt, the project name is also accessible
 # with ${CMAKE_PROJECT_NAME} (both CMake variables are in-sync within the top level
 # build script scope).
 project("bsdiffapplication")
+
+# bzip2文件夹下的文件较多是，使用目录来进行引入
+aux_source_directory(bzip2  SOURCES)
 
 # Creates and names a library, sets it as either STATIC
 # or SHARED, and provides the relative paths to its source code.
@@ -26,7 +30,12 @@ project("bsdiffapplication")
 # used in the AndroidManifest.xml file.
 add_library(${CMAKE_PROJECT_NAME} SHARED
         # List C/C++ source files with relative paths to this CMakeLists.txt.
-        native-lib.cpp)
+        native-lib.cpp
+        bspatch.c     #新引入的文件
+        bsdiff.c     #新引入的文件
+        ${SOURCES})
+include_directories(bzip2)
+
 
 # Specifies libraries CMake should link to your target library. You
 # can link libraries from various origins, such as libraries defined in this
