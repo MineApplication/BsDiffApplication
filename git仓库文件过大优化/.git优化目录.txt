@@ -1,0 +1,26 @@
+ZengBoBodeMacBook-Pro:yh-rme-srm-purchase-android zengbobo$ du -d 1 -h
+ 36M	./.build_history
+ 10M	./BaseLibrary
+139M	./app
+9.1M	./PurchaseBase-UI
+590M	./aaa_mine
+ 45M	./business
+1.3G	./app_application
+ 19M	./aars
+ 22M	./app-store
+ 72K	./gradle
+ 28K	./aa_zbb_backup
+2.9G	./.gradle
+8.4M	./build
+ 27M	./app-trade
+1.5G	./.git
+  0B	./album
+525M	./mine_文档
+ 96K	./repo
+4.0M	./.idea
+7.0G	.
+
+
+
+
+
