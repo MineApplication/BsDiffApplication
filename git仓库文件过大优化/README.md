@@ -13,7 +13,7 @@ git clone --mirror git@github.com:MineApplication/BsDiffApplication.git
 $ java -jar bfg-1.13.0.jar --strip-blobs-bigger-than 100M BsDiffApplication.git
 
 # 去除脏数据
-$ cd big-repo.git
+$ cd BsDiffApplication.git
 $ git reflog expire --expire=now --all
 $ git gc --prune=now --aggressive
 
